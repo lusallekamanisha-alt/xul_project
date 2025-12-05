@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Verify Email | Digital Library</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .verify-container { max-width:600px; margin:80px auto; padding:20px; background:#fff; border-radius:12px; text-align:center; }
+  </style>
+</head>
+<body>
+  <div class="verify-container" id="verify">
+    <h2>Verifying...</h2>
+    <p>Please wait.</p>
+  </div>
+
+  <script>
+    (async function(){
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      const el = document.getElementById('verify');
+      if (!token) { el.innerHTML = '<h2>Invalid link</h2><p>No token provided.</p>'; return; }
+      try {
+        const res = await fetch('/api/users/verify?token=' + encodeURIComponent(token));
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Verification failed');
+        el.innerHTML = '<h2>Email verified</h2><p>You can now <a href="login.html">login</a>.</p>';
+      } catch (err) {
+        el.innerHTML = '<h2>Verification failed</h2><p>' + (err.message || err) + '</p>';
+      }
+    })();
+  </script>
+</body>
+</html>
