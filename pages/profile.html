@@ -10,16 +10,45 @@
     <div class="container">
         <h1>User Profile</h1>
         <nav style="margin-bottom:20px;">
-            <a href="index.html">Home</a> |
-            <a href="catalog.html">Catalog</a> |
-            <a href="login.html">Login</a> |
-            <a href="register.html">Register</a>
+            <a href="dashboard.html">Home</a> |
+            <a href="catalog.html">Catalog</a> 
         </nav>
+
         <div id="profile-info">
-            <!-- User profile info will be shown here -->
+            <!-- User profile info will be displayed here -->
         </div>
-        <a href="index.html">Back to Home</a>
+
+        <button id="logout-btn" style="margin-top:15px;">Logout</button>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        // Load logged-in user
+        const loggedInUsername = localStorage.getItem("loggedInUser");
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+
+        const profileBox = document.getElementById("profile-info");
+        const logoutBtn = document.getElementById("logout-btn");
+
+        if (!loggedInUsername) {
+            profileBox.innerHTML = `
+                <p>You are not logged in.</p>
+                <p><a href="login.html">Login here</a></p>
+            `;
+            logoutBtn.style.display = "none"; // hide logout when not logged in
+        } else {
+            const user = users.find(u => u.username === loggedInUsername);
+
+            profileBox.innerHTML = `
+                <h2>Welcome, ${user.username}!</h2>
+                <p><strong>Email:</strong> ${user.email}</p>
+            `;
+        }
+
+        // Logout function
+        logoutBtn.addEventListener("click", () => {
+            localStorage.removeItem("loggedInUser");
+            window.location.href = "login.html";
+        });
+    </script>
 </body>
 </html>
